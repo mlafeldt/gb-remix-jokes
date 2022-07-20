@@ -1,19 +1,21 @@
 import type { LoaderFunction } from "@remix-run/node"
 import { json } from "@remix-run/node"
 import { useLoaderData, Link } from "@remix-run/react"
-import type { Joke } from "@prisma/client"
 
-import { db } from "~/utils/db.server"
+import { GetJokesDocument } from "~/graphql/generated"
+import type { Query, Joke } from "~/graphql/generated"
+
+import { client } from "~/utils/graphql.server"
 
 type LoaderData = { randomJoke: Joke }
 
 export const loader: LoaderFunction = async () => {
-  const count = await db.joke.count()
-  const randomRowNumber = Math.floor(Math.random() * count)
-  const [randomJoke] = await db.joke.findMany({
-    take: 1,
-    skip: randomRowNumber,
-  })
+  const resp = await client.request<Query>(GetJokesDocument, { first: 100 })
+  const jokes = resp.jokeCollection!.edges!.map((edge) => edge!.node)
+
+  const randomRowNumber = Math.floor(Math.random() * jokes.length)
+  const randomJoke = jokes[randomRowNumber]
+
   const data: LoaderData = { randomJoke }
   return json(data)
 }
@@ -25,7 +27,7 @@ export default function JokesIndexRoute() {
     <div>
       <p>Here's a random joke:</p>
       <p>{data.randomJoke.content}</p>
-      <Link to={data.randomJoke.id}>"{data.randomJoke.name}" Permalink</Link>
+      <Link to={data.randomJoke.id.replace("Joke#", "")}>"{data.randomJoke.name}" Permalink</Link>
     </div>
   )
 }

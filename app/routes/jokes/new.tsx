@@ -2,7 +2,10 @@ import type { ActionFunction } from "@remix-run/node"
 import { json, redirect } from "@remix-run/node"
 import { useActionData } from "@remix-run/react"
 
-import { db } from "~/utils/db.server"
+import { CreateJokeDocument } from "~/graphql/generated"
+import type { Mutation } from "~/graphql/generated"
+
+import { client } from "~/utils/graphql.server"
 
 function validateJokeContent(content: string) {
   if (content.length < 10) {
@@ -50,8 +53,10 @@ export const action: ActionFunction = async ({ request }) => {
     return badRequest({ fieldErrors, fields })
   }
 
-  const joke = await db.joke.create({ data: fields })
-  return redirect(`/jokes/${joke.id}`)
+  const resp = await client.request<Mutation>(CreateJokeDocument, fields)
+  const joke = resp!.jokeCreate!.joke!
+
+  return redirect(`/jokes/${joke.id.replace("Joke#", "")}`)
 }
 
 export default function NewJokeRoute() {

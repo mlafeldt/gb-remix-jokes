@@ -1,16 +1,18 @@
 import type { LoaderFunction } from "@remix-run/node"
 import { json } from "@remix-run/node"
 import { Link, useLoaderData } from "@remix-run/react"
-import type { Joke } from "@prisma/client"
 
-import { db } from "~/utils/db.server"
+import { GetJokeByIdDocument } from "~/graphql/generated"
+import type { Query, Joke } from "~/graphql/generated"
+
+import { client } from "~/utils/graphql.server"
 
 type LoaderData = { joke: Joke }
 
 export const loader: LoaderFunction = async ({ params }) => {
-  const joke = await db.joke.findUnique({
-    where: { id: params.jokeId },
-  })
+  const resp = await client.request<Query>(GetJokeByIdDocument, { id: `Joke#${params.jokeId}` })
+  const joke = resp.joke
+
   if (!joke) throw new Error("Joke not found")
   const data: LoaderData = { joke }
   return json(data)

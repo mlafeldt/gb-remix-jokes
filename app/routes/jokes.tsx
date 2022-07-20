@@ -1,20 +1,21 @@
 import { json, LinksFunction, LoaderFunction } from "@remix-run/node"
 import { Outlet, Link, useLoaderData } from "@remix-run/react"
-import type { Joke } from "@prisma/client"
 
-import { db } from "~/utils/db.server"
+import { GetJokesDocument } from "~/graphql/generated"
+import type { Query, Joke } from "~/graphql/generated"
+
+import { client } from "~/utils/graphql.server"
+
 import stylesUrl from "~/styles/jokes.css"
 
-type LoaderData = { jokes: Array<{ id: string; name: string }> }
+type LoaderData = { jokes: Array<Joke> }
 
 export const loader: LoaderFunction = async () => {
-  const data: LoaderData = {
-    jokes: await db.joke.findMany({
-      take: 5,
-      select: { id: true, name: true },
-      orderBy: { createdAt: "desc" },
-    }),
-  }
+  const resp = await client.request<Query>(GetJokesDocument, { first: 5 })
+  const jokes = resp.jokeCollection!.edges!.map((edge) => edge!.node)
+
+  const data: LoaderData = { jokes }
+
   return json(data)
 }
 
@@ -44,8 +45,8 @@ export default function JokesRoute() {
             <p>Here are a few more jokes to check out:</p>
             <ul>
               {data.jokes.map((joke) => (
-                <li key={joke.id}>
-                  <Link to={joke.id}>{joke.name}</Link>
+                <li key={joke?.id}>
+                  <Link to={joke.id.replace("Joke#", "")}>{joke.name}</Link>
                 </li>
               ))}
             </ul>
