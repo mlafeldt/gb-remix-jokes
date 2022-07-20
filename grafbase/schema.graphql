@@ -1,0 +1,9 @@
+schema @auth(providers: [{ type: oidc, issuer: "https://clerk.cute.elephant-78.lcl.dev" }]) {
+  query: Boolean
+}
+
+type Joke @model {
+  id: ID!
+  name: String!
+  content: String!
+}
