@@ -1,0 +1,19 @@
+query getJokes($first: Int!) {
+  jokeCollection(first: $first) {
+    edges {
+      node {
+        id
+        name
+        content
+      }
+    }
+  }
+}
+
+mutation createJoke($name: String!, $content: String!) {
+  jokeCreate(input: { name: $name, content: $content }) {
+    joke {
+      id
+    }
+  }
+}

@@ -7,17 +7,24 @@
   "scripts": {
     "build": "remix build",
     "dev": "remix dev",
-    "start": "remix-serve build"
+    "start": "remix-serve build",
+    "codegen": "graphql-codegen --config ./app/graphql/codegen.yml -r dotenv/config"
   },
   "dependencies": {
     "@prisma/client": "^4.0.0",
     "@remix-run/node": "^1.6.3",
     "@remix-run/react": "^1.6.3",
     "@remix-run/serve": "^1.6.3",
+    "graphql": "^16.5.0",
     "react": "^17.0.2",
-    "react-dom": "^17.0.2"
+    "react-dom": "^17.0.2",
+    "urql": "^2.2.2"
   },
   "devDependencies": {
+    "@graphql-codegen/cli": "^2.9.0",
+    "@graphql-codegen/typed-document-node": "^2.3.2",
+    "@graphql-codegen/typescript": "^2.7.2",
+    "@graphql-codegen/typescript-operations": "^2.5.2",
     "@remix-run/dev": "^1.6.3",
     "@remix-run/eslint-config": "^1.6.3",
     "@types/react": "^17.0.45",
