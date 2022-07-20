@@ -10,6 +10,14 @@ query getJokes($first: Int!) {
   }
 }
 
+query getJokeById($id: ID!) {
+  joke(id: $id) {
+    id
+    name
+    content
+  }
+}
+
 mutation createJoke($name: String!, $content: String!) {
   jokeCreate(input: { name: $name, content: $content }) {
     joke {
