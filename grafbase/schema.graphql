@@ -1,5 +1,9 @@
-schema @auth(providers: [{ type: oidc, issuer: "https://clerk.cute.elephant-78.lcl.dev" }]) {
-  query: Boolean
+schema
+  @auth(
+    providers: [{ type: oidc, issuer: "https://clerk.b74v0.5y6hj.lcl.dev/" }]
+    rules: [{ allow: private }]
+  ) {
+  query: Query
 }
 
 type Joke @model {
