@@ -10,7 +10,7 @@ import { client } from "~/utils/graphql.server"
 type LoaderData = { joke: Joke }
 
 export const loader: LoaderFunction = async ({ params }) => {
-  const resp = await client.request<Query>(GetJokeByIdDocument, { id: `Joke#${params.jokeId}` })
+  const resp = await client.request<Query>(GetJokeByIdDocument, { id: params.jokeId })
   const joke = resp.joke
 
   if (!joke) throw new Error("Joke not found")

@@ -56,7 +56,7 @@ export const action: ActionFunction = async ({ request }) => {
   const resp = await client.request<Mutation>(CreateJokeDocument, fields)
   const joke = resp!.jokeCreate!.joke!
 
-  return redirect(`/jokes/${joke.id.replace("Joke#", "")}`)
+  return redirect(`/jokes/${joke.id}`)
 }
 
 export default function NewJokeRoute() {
