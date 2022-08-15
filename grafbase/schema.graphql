@@ -7,7 +7,7 @@ schema
 }
 
 type Joke @model {
-  id: ID!
-  name: String!
+  id: ID! @unique
+  name: String! @unique
   content: String!
 }
