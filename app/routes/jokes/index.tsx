@@ -7,7 +7,7 @@ import type { Query, Joke } from "~/graphql/generated"
 
 import { client } from "~/utils/graphql.server"
 
-type LoaderData = { randomJoke: Joke }
+type LoaderData = { randomJoke?: Joke }
 
 export const loader: LoaderFunction = async () => {
   const resp = await client.request<Query>(GetJokesDocument, { first: 100 })
@@ -22,6 +22,10 @@ export const loader: LoaderFunction = async () => {
 
 export default function JokesIndexRoute() {
   const data = useLoaderData<LoaderData>()
+
+  if (!data.randomJoke) {
+    return <p>Please add a joke first.</p>
+  }
 
   return (
     <div>
